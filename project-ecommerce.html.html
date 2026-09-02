@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Piana Hartina Agustus 2026 - E-Commerce Dashboard</title>
+  <style>
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      background: #F8F5F2; 
+      color: #333; 
+      line-height: 1.7; 
+      margin: 0; 
+      padding: 0;
+    }
+    .container { 
+      max-width: 900px; 
+      margin: 40px auto; 
+      background: white; 
+      border-radius: 12px; 
+      padding: 50px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+    }
+    h1 { color: #3B2F2F; font-size: 32px; border-bottom: 3px solid #5C4A3A; padding-bottom: 10px; }
+    h2 { color: #5C4A3A; margin-top: 40px; font-size: 24px; }
+    h3 { color: #8B7355; font-size: 18px; }
+    .header { text-align: center; margin-bottom: 40px; }
+    .badge { background: #5C4A3A; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; }
+    img { width: 100%; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0; }
+    .step { background: #F8F5F2; padding: 20px; border-left: 4px solid #5C4A3A; margin: 15px 0; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: #5C4A3A; color: white; padding: 12px; text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid #eee; }
+    code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+    .insight { background: #FFF8E1; padding: 15px; border-radius: 8px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="badge">Portfolio Piana Hartina Bulan Agustus</span>
+      <h1>E-Commerce Sales & Customer Analytics Dashboard</h1>
+      <p>Tools: BigQuery (SQL) + Power BI | Dataset: Kaggle</p>
+    </div>
+
+    <img src="https://drive.google.com/file/d/1QUp-HQb2HOcHVcZWRX_lx-ZHDylJdfc0/view?usp=drivesdk" class="hero-img">
+
+    <section>
+      <h2>1. Latar Belakang & Tujuan</h2>
+      <p class="long-text">
+        Perusahaan e-commerce menghadapi tantangan dalam memantau performa penjualan real-time. Tujuan projek ini adalah membuat dashboard interaktif untuk memantau KPI utama, mengidentifikasi kategori produk terlaris, dan menemukan area perbaikan di logistik dan retur. Membuat Dashboard interaktif melalui prosedur:
+<p>A. Pengambilan Dataset: </p> 
+<p><b>Dataset:</b> <a href="https://www.kaggle.com/datasets/datascikhan/e-commerce-sales-and-customer-analytics" target="_blank">E-Commerce Sales and Customer Analytics</a></p>
+      <p>Dataset berisi 150.000 transaksi e-commerce dengan 5 file CSV:</p>
+      <ul>
+        <li><code>customer_master.csv</code> : Data demografi pelanggan</li>
+        <li><code>product_catalog.csv</code> : Data produk dan harga</li>
+        <li><code>order_items.csv</code> : Detail item per pesanan</li>
+        <li><code>ecommerce_sales_customer_analytics_150k.csv</code> : Data transaksi utama</li>
+        <li><code>dataset_statistics.csv</code> : Ringkasan statistik</li>
+      </ul> 
+<p>B. Data Understanding</p>
+<p>C. Data Warehouse di Google Bigquery: diupload ke Google BigQuery (SQL). Membuat dataset (ags26), upload table/file csv:</p>
+      <p>1. Buat Dataset baru: <code>ags26</code></p>
+      <p>2. Upload 5 file CSV ke masing-masing tabel</p>
+      <p>3. Buat <code>VIEW</code> gabungan bernama <code>dashboard_view</code> untuk mempermudah analisis di Power BI</p>
+<p>D. Pembuatan Dashboard & Insight di Power BI </p>
+      <p><b>Tujuan:</b> Membuat Dashboard Interaktif agar bisa analisis end-to-end</p>
+    </section>
+
+    <section>
+      <h2>2. Data Understanding</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Tabel</th><th>Kolom Penting</th><th>Gunanya</th></tr>
+          <tr><td>ecommerce_sales_150k</td><td>order_id, net_sales, profit, order_date</td><td>KPI Revenue, Profit, Tren Waktu</td></tr>
+          <tr><td>ecommerce_sales_150k</td><td>region, customer_segment, delivery_status</td><td>Analisis Lokasi, Segment, Logistik</td></tr>
+          <tr><td>product_catalog</td><td>product_category, brand, unit_price</td><td>Analisis Produk Terlaris</td></tr>
+          <tr><td>order_items</td><td>quantity, discount_amount</td><td>Hitung Total Unit & Promo</td></tr>
+          <tr><td>customer_master</td><td>customer_age, customer_acquisition_cost</td><td>Analisis Demografi & CAC</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Data Warehouse - Google BigQuery</h2>
+      <p> </p>
+      <pre><code>-- Kode SQL BigQuery: 
+1. SQL1:
+ -- pengagabungan tabel dari 3 file (customer_master , order_items , product_catalog) ke file utama (shipping_raw) menjadi dashboard_view
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.dashboard_view` AS
+SELECT 
+  -- Dari shipping_raw = file utama
+  s.order_id, s.order_date, s.order_time, s.order_status,
+  s.customer_id, s.customer_segment, s.customer_type,
+  s.customer_city, s.customer_state, s.region, s.customer_country,
+  s.customer_lifetime_value, s.customer_order_count,
+  s.warehouse, s.shipping_method, s.delivery_days, s.estimated_delivery_days, s.delivery_status,
+  s.gross_sales, s.discount_amount, s.tax_amount, s.shipping_cost, s.net_sales, s.product_cost, s.profit, s.profit_margin_percentage,
+  s.marketing_channel, s.campaign_name, s.coupon_code, s.customer_rating, s.review_sentiment, s.customer_review,
+  s.return_status, s.return_reason, s.loyalty_points_earned, s.loyalty_points_redeemed,
+  
+  -- Dari order_items
+  i.product_id, i.quantity, i.unit_price, i.discount_percentage, i.discount_amount AS item_discount_amount,
+  
+  -- Dari product_catalog
+  p.product_name, p.product_category, p.product_subcategory, p.brand, p.supplier, p.product_rating,
+  
+  -- Dari customer_master
+  c.customer_name, c.customer_age, c.gender, c.customer_postal_code, c.customer_acquisition_cost
+
+FROM `portofolio-502700.ags26.shipping_raw` s
+LEFT JOIN `portofolio-502700.ags26.order_items` i ON s.order_id = i.order_id
+LEFT JOIN `portofolio-502700.ags26.product_catalog` p ON i.product_id = p.product_id
+LEFT JOIN `portofolio-502700.ags26.customer_master` c ON s.customer_id = c.customer_id;
+
+2. SQL2:
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.dataset_statistics` AS
+SELECT
+  COUNT(DISTINCT order_id) AS total_orders,
+  SUM(net_sales) AS total_revenue,
+  SUM(profit) AS total_profit,
+  AVG(net_sales) AS avg_order_value,
+  ROUND(COUNTIF(delivery_status = 'On Time') * 100.0 / COUNT(order_id), 2) AS otd_percentage,
+  ROUND(COUNTIF(return_status = 'Returned') * 100.0 / COUNT(order_id), 2) AS return_rate_percentage,
+  AVG(customer_rating) AS avg_customer_rating,
+  SUM(quantity) AS total_items_sold,
+  COUNT(DISTINCT customer_id) AS total_customers,
+  COUNT(DISTINCT product_id) AS total_products,
+  MIN(order_date) AS first_order_date,
+  MAX(order_date) AS last_order_date
+FROM `portofolio-502700.ags26.dashboard_view`;
+
+3. SQL3: q1.sales_performance
+-- sales_performance (sales & market) : Analisa net_sales by region + product_category
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q1_sales_performance` AS
+SELECT
+  region, product_category,
+  SUM(net_sales) AS total_sales,
+  SUM(profit) AS total_profit,
+  AVG(profit_margin_percentage) AS avg_margin,
+  COUNT(DISTINCT order_id) AS total_orders
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY region, product_category
+ORDER BY total_sales DESC;
+
+4. SQL4: q2.otd_warehouse
+--  otd_warehouse (Logistics): Hitung OTD % + Capacity per warehouse
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q2_otd_warehouse` AS
+SELECT
+  warehouse,
+  COUNT(order_id) AS total_orders,
+  SUM(quantity) AS total_items_shipped,
+  COUNTIF(delivery_status = 'On Time') AS on_time_orders,
+  ROUND(COUNTIF(delivery_status = 'On Time') * 100.0 / COUNT(order_id), 2) AS otd_percentage,
+  AVG(delivery_days) AS avg_delivery_days,
+  AVG(estimated_delivery_days) AS avg_estimated_days
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY warehouse
+ORDER BY otd_percentage ASC;
+
+5. SQL5: q3.customer_destributor
+-- customer_distributor : Buat "Manage distributor performance" pake warehouse + customer_rating
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q3_customer_distributor` AS
+SELECT
+  warehouse, customer_segment, region,
+  AVG(customer_rating) AS avg_rating,
+  AVG(customer_lifetime_value) AS avg_clv,
+  AVG(customer_acquisition_cost) AS avg_cac,
+  AVG(customer_lifetime_value - customer_acquisition_cost) AS avg_customer_profit,
+  COUNT(DISTINCT customer_id) AS total_customers
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY warehouse, customer_segment, region
+ORDER BY avg_clv DESC;
+
+6. SQL6: q4.product_profit
+-- Product Profit (Analisa profit per brand + supplier)
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q4_product_profit` AS
+SELECT
+  brand, supplier, product_category,
+  SUM(profit) AS total_profit,
+  SUM(quantity) AS total_quantity_sold,
+  AVG(product_rating) AS avg_product_rating,
+  AVG(profit_margin_percentage) AS avg_margin
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY brand, supplier, product_category
+ORDER BY total_profit DESC
+LIMIT 50;
+
+7. SQL7: q5.promo_efektif
+-- marketing_promo (analisa promo efektif)
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q5_marketing_promo` AS
+SELECT
+  marketing_channel, campaign_name, coupon_code,
+  SUM(net_sales) AS total_sales,
+  SUM(profit) AS total_profit,
+  COUNT(order_id) AS total_orders,
+  AVG(discount_percentage) AS avg_discount
+FROM `portofolio-502700.ags26.dashboard_view`
+WHERE campaign_name IS NOT NULL
+GROUP BY marketing_channel, campaign_name, coupon_code
+ORDER BY total_profit DESC
+LIMIT 20;
+
+8. SQL8: q6.analisa_retur
+-- returns (analisa retur)
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q6_returns` AS
+SELECT
+  return_reason, product_category, warehouse,
+  COUNT(order_id) AS total_returns,
+  ROUND(COUNT(order_id) * 100.0 / (SELECT COUNT(*) FROM `portofolio-502700.ags26.dashboard_view`), 2) AS return_rate_pct
+FROM `portofolio-502700.ags26.dashboard_view`
+WHERE return_status = 'Returned'
+GROUP BY return_reason, product_category, warehouse
+ORDER BY total_returns DESC;
+
+9. SQL9: q7.customer_value
+-- customer_value (CLC vs CAC)
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q7_customer_value` AS
+SELECT
+  customer_segment, region,
+  AVG(customer_lifetime_value) AS avg_clv,
+  AVG(customer_acquisition_cost) AS avg_cac,
+  AVG(customer_lifetime_value - customer_acquisition_cost) AS avg_profit_per_customer,
+  COUNT(DISTINCT customer_id) AS total_customers
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY customer_segment, region
+ORDER BY avg_profit_per_customer DESC;
+
+10. SQL10: q8.time_analysis
+-- time_analysis (jam rame + lead time)
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q8_time_analysis` AS
+SELECT
+  EXTRACT(HOUR FROM order_time) AS order_hour,
+  FORMAT_DATE('%Y-%m', order_date) AS order_month,
+  AVG(delivery_days - estimated_delivery_days) AS avg_delay_days,
+  COUNT(order_id) AS total_orders
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY order_hour, order_month
+ORDER BY order_month, order_hour;
+
+11. SQL11: q9.loyalty_program
+-- loyalty_program
+CREATE OR REPLACE VIEW `portofolio-502700.ags26.q9_loyalty_program` AS
+SELECT
+  customer_segment,
+  SUM(loyalty_points_earned) AS total_points_earned,
+  SUM(loyalty_points_redeemed) AS total_points_redeemed,
+  AVG(customer_lifetime_value) AS avg_clv
+FROM `portofolio-502700.ags26.dashboard_view`
+GROUP BY customer_segment
+ORDER BY avg_clv DESC;</code></pre>
+    </section>
+
+    <section>
+      <h2>4. Analisis & Dashboard</h2>
+
+      <h3>Dashboard Power BI</h3>
+      <img src="https://drive.google.com/file/d/1QUp-HQb2HOcHVcZWRX_lx-ZHDylJdfc0/view?usp=drivesdk.png">
+      <h3>Dashboard Looker Studio</h3>
+      <img src="assets/img/looker.png">
+      <h3>Dashboard Excel</h3>
+      <img src="assets/img/excel.png">
+
+ <div class="step">
+      <p><b>Tools:</b> Power BI terhubung ke BigQuery View <code>dashboard_view</code></p>
+      <p><b>Visualisasi:</b></p>
+      <ul>
+        <li><b>KPI Card:</b> Total Revenue, Total Orders, AOV, Profit, OTD %</li>
+        <li><b>Grafik Garis:</b> Tren Revenue 30 Hari Terakhir</li>
+        <li><b>Grafik Batang:</b> Revenue per Kategori Produk</li>
+        <li><b>Donut Chart:</b> Distribusi Shipping Status</li>
+        <li><b>Map:</b> Revenue per Region</li>
+        <li><b>Slicer:</b> Filter Bulan, Kategori, Status, Payment</li>
+      </ul>
+    </div>
+
+    <div class="insight">
+      <h3>KEY INSIGHT</h3>
+      <p>1. <b>Total Revenue</b> mencapai 611.81Jt dengan <b>Profit Margin</b> 42.98%</p>
+      <p>2. <b>Kategori terlaris</b> menyumbang 1.28M. Fokus stok & marketing di kategori ini</p>
+      <p>3. <b>On-Time Delivery 62.99%</b> masih di bawah target 80%. Perlu evaluasi logistik</p>
+      <p>4. <b>Return Rate 6.84%</b> - Alasan utama: [isi dari Q9]</p>
+    </div>
+
+    <h2>KESIMPULAN</h2>
+    <p>Dashboard ini membantu tim bisnis memantau performa penjualan real-time, mengidentifikasi kategori potensial, dan menemukan area perbaikan di logistik & retur.</p>
+    
+    <p style="text-align:center; margin-top:50px; color:#888;">© Portfolio Data Analyst Piana Hartina - Agustus 2026</p>
+    </div>
+   </section>
+  </main>
+</body>
+</html>

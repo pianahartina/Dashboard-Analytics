@@ -1,0 +1,24 @@
+body { font-family: 'Segoe UI', Arial; background: #F8F5F2; margin: 0; color: #333; }
+nav { padding: 20px 40px; background: white; }
+nav a { text-decoration: none; color: #5C4A3A; font-weight: bold; }
+.container { max-width: 900px; margin: 20px auto; padding: 40px; background: white; border-radius: 12px; }
+header { background: #3B2F2F; color: white; text-align: center; padding: 50px 20px; }
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 40px; }
+.card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-decoration: none; color: #333; transition: 0.3s; }
+.card:hover { transform: translateY(-5px); }
+.card img { width: 100%; border-radius: 8px; height: 180px; object-fit: cover; }
+.tag { background: #5C4A3A; color: white; padding: 4px 10px; border-radius: 15px; font-size: 12px; margin-right: 5px; }
+.hero-img { width: 100%; border-radius: 10px; margin: 20px 0; }
+pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+.table-wrapper { overflow-x: auto; margin: 20px 0; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #5C4A3A; color: white; padding: 12px; text-align: left; }
+td { padding: 10px; border-bottom: 1px solid #eee; }
+.long-text { text-align: justify; line-height: 1.8; }
+section { margin-bottom: 40px; }
+
+@media (max-width: 768px) {
+ .container, nav { padding: 20px; }
+  h1 { font-size: 24px; }
+ .project-grid { padding: 20px; }
+}
